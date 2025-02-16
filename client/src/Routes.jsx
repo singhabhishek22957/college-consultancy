@@ -6,6 +6,7 @@ import AdminLogin from "./Components/AdminLogin.jsx";
 import AdminPanel from "./Components/AdminPanel.jsx";
 // import Test from "./Components/User/Test.jsx";
 import Test from "./Components/Universities/Test.jsx";
+import AddAdmission from "./Components/Universities/Admission/AddAdmission.jsx";
 import AddUniversity from "./Components/Universities/AddUniversity.jsx";
 import ShowUniversities from "./Components/Universities/ShowUniversities.jsx";
 import ArchiveUniversityList from "./Components/Universities/ArchiveUinversityList.jsx";
@@ -16,6 +17,8 @@ import CourseList from "./Components/Universities/Course/CourseList.jsx";
 import AddSubCourse from "./Components/Universities/Course/AddSubCourse.jsx";
 import UpdateSubCourse from "./Components/Universities/Course/UpdateSubCourse.jsx";
 import UpdateCourse from "./Components/Universities/Course/UpdateCourse.jsx";
+import GetAdmission from "./Components/Universities/Admission/GetAdmission.jsx";
+import UpdateAdmission from "./Components/Universities/Admission/UpdateAdmission.jsx";
 
 
 export const router = createBrowserRouter(
@@ -50,7 +53,14 @@ export const router = createBrowserRouter(
 
         // admission routes
 
-        <Route path="/add-admission" element={<Test/>}/>
+        <Route path="/add-admission" element={<AddAdmission/>}/>
+
+        <Route path="/show-admission" element={<GetAdmission/>}/>
+
+         <Route path="/university/update-admission/:universityId/:year" element={<UpdateAdmission/>}/>
+
+
+        {/* <Route path="/delete-admission" element={<AddAdmission/>}/> */}
         
 
         </Route>

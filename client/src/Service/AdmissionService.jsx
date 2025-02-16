@@ -16,4 +16,51 @@ export const addAdmission = async (data) => {
       withCredentials: true,
     }
   );
+
+  return response;
 };
+
+export const getAdmission = async (data)=>{
+    const response = await admissionService.post(
+        "/get-admission",
+        {
+            ...data,
+        },
+        {
+            withCredentials: true,
+        }
+    );
+
+    return response;
+    
+}
+
+
+export const updateAdmission = async (data)=>{
+    const response = await admissionService.post(
+        "/update-admission",
+        {
+            ...data,
+        },
+        {
+            withCredentials: true,
+        }
+    );
+
+    return response;
+    
+}
+export const deleteAdmission = async (data)=>{
+    const response = await admissionService.post(
+        "/delete-admission",
+        {
+            ...data,
+        },
+        {
+            withCredentials: true,
+        }
+    );
+
+    return response;
+    
+}

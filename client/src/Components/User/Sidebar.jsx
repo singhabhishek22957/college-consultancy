@@ -19,7 +19,7 @@ const Sidebar = () => {
     { name: "Admin", color: "green", items: ["Add Admin", "Edit Admin", "Show Admin"] },
     { name: "Course", color: "yellow", items: ["Add Course" , "Course List"] },
     { name: "Student", color: "red", items: ["Add Student", "Edit Student", "Student List"] },
-    { name: "Admission", color: "pink", items: ["Add Admission", "Edit Admission", "Add Course Admission "] },
+    { name: "Admission", color: "pink", items: ["Add Admission",  "Show Admission","Add Course Admission "] },
     { name: "Others", color: "gray", items: ["Archive University", "Edit Student", "Student List"] },
   ];
 

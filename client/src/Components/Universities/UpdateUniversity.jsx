@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {  searchUniversity, updateUniversity } from "../../Service/UniversityService";
 import LoadingPopUp from "../User/LoadingPopUp";
 import MessagePopUp from "../MessagePopUp";
+import UniversitySearch from "./UniversitySearch";
 
 const UpdateUniversity = () => {
   const [formData, setFormData] = useState({
@@ -27,44 +28,13 @@ const UpdateUniversity = () => {
 
 
 
-  // search item 
-  const [searchItem, setSearchItem] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
+ 
   const [isFormShow, setIsFormShow] = useState(false);
 
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        console.log('searchItem', searchItem);
-        if (!searchItem.trim()) return; // Prevent API call if empty
-        
-        const response = await searchUniversity({
-          ...searchItem,
-          searchItem: searchItem,
-        });
-
-        console.log("this is error ", response);
-        setSuggestions(response.data.data.universities);
-        setShowDropdown(true);
-      } catch (error) {
-        console.error('Error fetching suggestions:', error);
-      }
-    };
-
-    const delayDebounce = setTimeout(() => {
-      fetchSuggestions();
-    }, 300); // Wait 300ms before sending request
-
-    return () => clearTimeout(delayDebounce); // Cleanup timeout
-  }, [searchItem]);
-// end search item 
 
 // handle fetch searchItem 
 
 const handleSearchDataFetch= (uni)=>{
-  setShowDropdown(false);
-  setIsFormShow(true);
   setFormData({
     ...formData,
     universityId: uni._id,
@@ -86,6 +56,7 @@ const handleSearchDataFetch= (uni)=>{
     campusArea: uni.campusArea,
     officialWebsite: uni.officialWebsite,
   });
+  setIsFormShow(true);
 
 
 }
@@ -185,36 +156,12 @@ const handleSearchDataFetch= (uni)=>{
   };
 
   return (
-    <div className="max-w-4xl h-screen mx-auto p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold mb-4">Add University</h2>
-      <div className=" flex">
-      <div className="relative  w-[400px]">
-      <input
-        type="text"
-        placeholder="Search for universities..."
-        value={searchItem}
-        onChange={(e) => setSearchItem(e.target.value)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-        className="w-full p-2 border border-gray-300 rounded-lg"
-      />
-      
-      {showDropdown && suggestions.length > 0 && (
-        <ul className="absolute top-10 mt-1 w-full bg-white border border-gray-300 rounded-lg list-none p-2 shadow-md">
-          {suggestions.map((uni) => (
-            <li
-              key={uni._id}
-              onClick={() => handleSearchDataFetch(uni)}
-              className="p-2 cursor-pointer font-medium text-lg capitalize hover:bg-gray-100"
-            >
-              {uni.name} - {uni._id} - {uni.established} - {uni.type}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-    <button className=" p-2 px-3 ml-3 border  border-black-300 rounded-lg" >Fetch</button>
+    <div className="max-w-4xl m-4 h-screen mx-auto p-6 bg-white shadow-md rounded-md">
+      <h2 className="text-2xl font-bold mb-4">Update University</h2>
+    
 
-      </div>
+      <UniversitySearch onSelect={handleSearchDataFetch} />
+
 
      
 

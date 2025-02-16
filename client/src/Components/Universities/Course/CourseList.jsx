@@ -18,10 +18,8 @@ const CourseList = () => {
   });
   const navigate = useNavigate();
   const [courseData, setCourseData] = useState([]);
-  // const [searchItem, setSearchItem] = useState("");
-  // const [suggestions, setSuggestions] = useState([]);
-  // const [showDropdown, setShowDropdown] = useState(false);
-  const [isFormShow, setIsFormShow] = useState(false);
+ 
+
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState({
     success: false,
@@ -64,23 +62,7 @@ const CourseList = () => {
   };
   
 
-  // Fetch university suggestions
-  // const fetchSuggestions = useCallback(async () => {
-  //   if (!searchItem.trim()) return;
-
-  //   try {
-  //     const response = await searchUniversity({ searchItem });
-  //     setSuggestions(response.data.data.universities);
-  //     setShowDropdown(true);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, [searchItem]);
-
-  // useEffect(() => {
-  //   const delayDebounce = setTimeout(fetchSuggestions, 300); // Debounce input
-  //   return () => clearTimeout(delayDebounce);
-  // }, [fetchSuggestions]);
+ 
 
   const handleSearchDataFetch = (university) => {
     setUniversityData({
@@ -146,35 +128,6 @@ const CourseList = () => {
     <div className="w-full h-screen mx-auto p-6 bg-white shadow-md rounded-md">
         <h2 className="text-3xl capitalize font-bold mb-6 text-center">{universityData.universityName} Courses List</h2>
 
-      {/* <div className="flex">
-        <div className="relative w-[400px]">
-          <input
-            type="text"
-            placeholder="Search for universities..."
-            value={isFormShow ? universityData.universityName : searchItem}
-            onChange={(e) => setSearchItem(e.target.value)}
-            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          />
-
-          {showDropdown && suggestions.length > 0 && (
-            <ul
-              className="absolute top-10 mt-1 w-full bg-white border border-gray-300 rounded-lg list-none p-2 shadow-md"
-              onMouseDown={handleDropdownClick}
-            >
-              {suggestions.map((uni) => (
-                <li
-                  key={uni._id}
-                  onClick={() => handleSearchDataFetch(uni)}
-                  className="p-2 cursor-pointer font-medium text-lg capitalize hover:bg-gray-100"
-                >
-                  {uni.name} - {uni._id} - {uni.established} - {uni.type}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div> */}
 
       <UniversitySearch onSelect={handleSearchDataFetch} />
 
