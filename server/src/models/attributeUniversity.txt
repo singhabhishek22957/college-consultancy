@@ -1,0 +1,169 @@
+Here’s the **detailed MongoDB schema with attributes, types, and constraints** for each collection in your university database. I’ve included attributes, types, examples, and whether they are required or optional.
+
+---
+
+### **1. `university` Collection**
+Stores basic information about universities.
+
+```json
+{
+  "name": { "type": "string", "required": true, "example": "Uttaranchal University" },
+  "logo": { "type": "string", "required": true, "example": "https://example.com/logo.png" },
+  "address": {
+    "type": "object",
+    "required": true,
+    "attributes": {
+      "street": { "type": "string", "example": "Arcadia Grant" },
+      "city": { "type": "string", "example": "Dehradun" },
+      "state": { "type": "string", "example": "Uttarakhand" },
+      "postalCode": { "type": "string", "example": "248007" },
+      "country": { "type": "string", "example": "India" }
+    }
+  },
+  "type": { "type": "string", "required": true, "enum": ["Private", "Government"], "example": "Private" },
+  "naacGrade": { "type": "string", "required": false, "example": "A+" },
+  "reviews": { "type": "string", "required": false, "example": "Excellent facilities and faculty." },
+  "coverImage": { "type": "string", "required": false, "example": "https://example.com/cover.jpg" },
+  "established": { "type": "string", "required": true, "example": "2003" },
+  "approvedBy": { "type": "string", "required": true, "example": "AICTE, UGC" },
+  "setBy": { "type": "string", "required": true, "example": "Government of India" },
+  "entranceExam": { "type": "string", "required": false, "example": "JEE, CAT" },
+  "coursesOffered": {
+    "type": "array",
+    "required": false,
+    "example": ["MCA", "MBA", "B.Tech", "BCA"]
+  },
+  "applicationMode": { "type": "string", "required": true, "enum": ["Online", "Offline"], "example": "Online" },
+  "admissionCriteria": { "type": "string", "required": true, "example": "Merit and Entrance Exam" },
+  "topRecruiters": {
+    "type": "array",
+    "required": true,
+    "example": ["Google", "Microsoft", "TCS", "Infosys"]
+  },
+  "facilities": {
+    "type": "array",
+    "required": true,
+    "example": ["Hostel", "Library", "Sports Complex"]
+  },
+  "campusArea": { "type": "string", "required": true, "example": "70 Acres" },
+  "officialWebsite": { "type": "string", "required": true, "example": "https://example.com" }
+}
+```
+
+---
+
+### **2. `university_info` Collection**
+Stores additional details about the university.
+
+```json
+{
+  "universityId": { "type": "ObjectId", "required": true, "ref": "university" },
+  "about": { "type": "string", "required": true, "example": "Premier university in India." },
+  "introVideo": { "type": "string", "required": false, "example": "https://youtube.com/example" }
+}
+```
+
+---
+
+### **3. `ranks` Collection**
+Stores rankings from various agencies.
+
+```json
+{
+  "universityId": { "type": "ObjectId", "required": true, "ref": "university" },
+  "agencyName": { "type": "string", "required": true, "example": "NIRF" },
+  "rank": { "type": "string", "required": false, "example": "Top 50 Universities in India" }
+}
+```
+
+---
+
+### **4. `awards` Collection**
+Stores awards won by universities.
+
+```json
+{
+  "universityId": { "type": "ObjectId", "required": true, "ref": "university" },
+  "awards": { "type": "array", "required": true, "example": ["Best University Award 2020", "Innovation in Education 2021"] }
+}
+```
+
+---
+
+### **5. `courses` Collection**
+Stores information about courses offered by universities.
+
+```json
+{
+  "universityId": { "type": "ObjectId", "required": true, "ref": "university" },
+  "courseName": { "type": "string", "required": true, "example": "Master of Computer Applications" },
+  "courseShortName": { "type": "string", "required": false, "example": "MCA" },
+  "courseDetails": { "type": "string", "required": false, "example": "Postgraduate program in computer applications." },
+  "eligibility": { "type": "string", "required": true, "example": "Bachelor's degree with 50% marks." },
+  "selectionCriteria": { "type": "string", "required": false, "example": "Entrance exam + Merit" },
+  "type": { "type": "string", "required": true, "enum": ["UG", "PG", "Diploma"], "example": "PG" },
+  "application": { "type": "string", "required": false, "example": "Online" },
+  "feeStructure": { "type": "string", "required": true, "example": "INR 2,50,000 per year" },
+  "ratings": { "type": "string", "required": false, "example": "4.5" },
+  "duration": { "type": "string", "required": true, "example": "3 years" },
+  "semester": { "type": "number", "required": true, "example": 6 },
+  "brochureLink": { "type": "string", "required": false, "example": "https://example.com/mca_brochure.pdf" }
+}
+```
+
+---
+
+### **6. `sub_courses` Collection**
+Stores details about course specializations.
+
+```json
+{
+  "courseId": { "type": "ObjectId", "required": true, "ref": "courses" },
+  "courseName": { "type": "string", "required": true, "example": "MCA - Data Science" },
+  "courseDetails": { "type": "string", "required": false, "example": "Focus on data science and analytics." },
+  "eligibility": { "type": "string", "required": false, "example": "Same as MCA eligibility." },
+  "applicationDate": { "type": "date", "required": false, "example": "2025-01-31" },
+  "feeStructure": { "type": "string", "required": false, "example": "INR 3,00,000 per year" }
+}
+```
+
+---
+
+### **7. `placements` Collection**
+Stores placement information.
+
+```json
+{
+  "universityId": { "type": "ObjectId", "required": true, "ref": "university" },
+  "placementDetails": { "type": "string", "required": true, "example": "Strong placement record." },
+  "highestPackagePara": { "type": "string", "required": false, "example": "Highest package is INR 1 Cr." },
+  "highestPackageOffered": { "type": "string", "required": false, "example": "INR 1 Cr" },
+  "placementPercentage": { "type": "string", "required": false, "example": "95%" },
+  "companyVisits": { "type": "number", "required": false, "example": 200 }
+}
+```
+
+---
+
+### **8. `scholarship` Collection**
+Stores scholarship details.
+
+```json
+{
+  "universityId": { "type": "ObjectId", "required": true, "ref": "university" },
+  "scholarshipDetails": { "type": "string", "required": true, "example": "Scholarship for meritorious students." },
+  "percentageRange": { "type": "string", "required": false, "example": "90% and above" },
+  "scholarshipPercentage": { "type": "number", "required": false, "example": 50 },
+  "qualifyingExam": { "type": "string", "required": false, "example": "12th or equivalent" },
+  "linkScholar": { "type": "string", "required": false, "example": "https://example.com/scholarship" }
+}
+```
+
+---
+
+### Additional Collections (similar structure):  
+- `questions` for FAQs  
+- `facilities` for campus amenities  
+- `admission_details` for admission info  
+
+This format provides a **clear and detailed schema** for all attributes while keeping MongoDB's flexibility in mind. Let me know if you need further adjustments!
