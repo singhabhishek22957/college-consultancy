@@ -93,5 +93,22 @@ export const updateSubCourse = async(data)=>{
     return response;
 }
 
+export const searchCourse = async(data)=>{
+    const response = await courseService.post(
+        "/search-course",
+        {
+            ...data
+        },
+        {
+            withCredentials: true,
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+    )
+
+    return response;
+}
+
 
 

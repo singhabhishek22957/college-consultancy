@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { searchUniversity } from "../../Service/UniversityService";
+import { searchCourse } from "../../../Service/CourseService";
 
-const UniversitySearch = ({ onSelect }) => {
+const SearchCourse = ({ onSelect }) => {
   const [searchItem, setSearchItem] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -12,8 +12,8 @@ const UniversitySearch = ({ onSelect }) => {
     if (!searchItem.trim()) return;
     
     try {
-      const response = await searchUniversity({ searchItem }); // API Call
-      setSuggestions(response.data.data.universities);
+      const response = await searchCourse({ searchItem }); // API Call
+      setSuggestions(response.data.data.course);
       setShowDropdown(true);
     } catch (error) {
       console.error(error);
@@ -26,19 +26,18 @@ const UniversitySearch = ({ onSelect }) => {
     return () => clearTimeout(delayDebounce);
   }, [fetchSuggestions]);
 
-  const handleSelection = (university) => {
+  const handleSelection = (course) => {
     setShowDropdown(false);
-    setSearchItem(university.name); 
+    setSearchItem(course.courseName); 
     setIsFetch(true);
-    onSelect(university); // Pass selected university to parent
+    onSelect(course); // Pass selected university to parent
   };
-  
 
   return (
     <div className="relative w-[400px]">
       <input
         type="text"
-        placeholder="Search for universities..."
+        placeholder="Search for courses..."
         value={searchItem}
         onChange={(e) => setSearchItem(e.target.value)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
@@ -47,13 +46,13 @@ const UniversitySearch = ({ onSelect }) => {
 
       {showDropdown && suggestions.length > 0 && (
         <ul className="absolute top-10 mt-1 w-full bg-white border border-gray-300 rounded-lg list-none p-2 shadow-md">
-          {suggestions.map((uni) => (
+          {suggestions.map((course) => (
             <li
-              key={uni._id}
-              onClick={() => handleSelection(uni)}
+              key={course._id}
+              onClick={() => handleSelection(course)}
               className="p-2 cursor-pointer font-medium text-lg capitalize hover:bg-gray-100"
             >
-              {uni.name} - {uni._id} - {uni.established} - {uni.type}
+              {course.courseName} - {course.courseShortName} - {course._id} 
             </li>
           ))}
         </ul>
@@ -62,4 +61,4 @@ const UniversitySearch = ({ onSelect }) => {
   );
 };
 
-export default UniversitySearch;
+export default SearchCourse;

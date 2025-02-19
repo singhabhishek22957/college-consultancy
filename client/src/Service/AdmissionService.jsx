@@ -64,3 +64,33 @@ export const deleteAdmission = async (data)=>{
     return response;
     
 }
+
+
+export const addAdmissionCourse = async (data)=>{
+    console.log("Data of add admission coures : ", data);
+    
+  const response = await admissionService.post(
+      "/add-admission-course",
+      {
+          ...data,
+      },
+      {
+          withCredentials: true,
+      }
+  );
+  return response;
+}
+
+
+export const getAdmissionYear = async (data)=>{
+    const response = await admissionService.post(
+        "/get-admission-year",{
+          data
+        },{
+            withCredentials:true
+        }
+    )
+
+    return response;
+    
+}

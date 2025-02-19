@@ -110,7 +110,7 @@ export const searchUniversity = async (data) => {
 };
 
 export const updateUniversity = async (data) => {
-    console.log("sikhaj data ",data);
+    // console.log("sikhaj data ",data);
     
   const response = await universityService.post(
     "/update-university",

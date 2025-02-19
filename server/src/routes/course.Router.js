@@ -6,6 +6,7 @@ import {
   getCourseByCourseId,
   getCourseByUniversityId,
   getSubCourseByCourseIdAndSubCourseId,
+  searchCourse,
   updateCourse,
   updateSubCourse,
 } from "../controllers/course.controllers.js";
@@ -54,5 +55,9 @@ router
 // update sub course
 
 router.route("/update-subCourse").post(isAuthenticated, updateSubCourse);
+
+
+// search course 
+router.route("/search-course").post(isAuthenticated,searchCourse)
 
 export default router;

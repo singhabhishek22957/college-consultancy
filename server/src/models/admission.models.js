@@ -1,5 +1,71 @@
 import mongoose, { Schema } from "mongoose";
 
+
+const admissionCourseSchema = new Schema({
+  courseId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Course",
+  },
+  heading: {
+    type: String,
+  },
+  
+
+  // Admission Process
+  admissionProcess: 
+    {
+      heading: {
+        type: String,
+      },
+      description: {
+        type: [String],
+        default: [],
+      },
+      subHeading: {
+        type: [String],
+        default: [],
+      },
+    },
+  
+  
+  // Admission Fee Details
+  admissionFee: 
+    {
+      heading: {
+        type: String,
+      },
+    
+      feeType: {
+        type: String,
+      },
+      feeAmount: {
+        type: String,
+      },
+    },
+  
+
+  // Selection Criteria
+  selectionCriteria: 
+    {
+      heading: {
+        type: String,
+      },
+      description: {
+        type: [String],
+        default: [],
+      },
+      subHeading: {
+        type: [String],
+        default: [],
+      },
+      eligibility: {
+        type: String,
+      },
+    },
+  
+});
+
 const admissionSchema = new Schema(
   {
     universityId: {
@@ -39,61 +105,65 @@ const admissionSchema = new Schema(
       enum: ["online", "offline", "online and offline"],
     },
     ScholarShips: {
-      type: [String],
+      type: String,
       enum: ["yes", "no", "not applicable"],
     },
     // course wise admission details
-    admissionCourse: [
-      {
-        CourseId: {
-          type: Schema.Types.ObjectId,
-          required: true,
-          ref: "Course",
-        },
-        heading: {
-          type: String,
-        },
-        selectionCriteria: {
-          type: String,
-        },
-
-        // admission Process
-        admissionProcess: [
-          {
-            heading: {
-              type: String,
-            },
-            description: [String],
-            subHeading: [String],
-          },
-        ],
-        admissionFee: [
-          {
-            heading: {
-              type: String,
-            },
-            description: [String],
-            feeType: String,
-            feeAmount: [String],
-          },
-        ],
-        // selection criteria
-        selectionCriteria: [
-          {
-            heading: {
-              type: String,
-            },
-            description: [String],
-            subHeading: [String],
-            eligibility: {
-              type: String,
-            },
-          },
-        ],
-      },
-    ],
+    admissionCourse: {
+      type: [admissionCourseSchema],
+      default: [],
+    }
   },
   { timestamps: true }
 );
 
 export const Admission = mongoose.model("Admission", admissionSchema);
+
+
+// {
+//   CourseId: {
+//     type: Schema.Types.ObjectId,
+//     required: true,
+//     ref: "Course",
+//   },
+//   heading: {
+//     type: String,
+//   },
+//   selectionCriteria: {
+//     type: String,
+//   },
+
+//   // admission Process
+//   admissionProcess: [
+//     {
+//       heading: {
+//         type: String,
+//       },
+//       description: [String],
+//       subHeading: [String],
+//     },
+//   ],
+//   admissionFee: [
+//     {
+//       heading: {
+//         type: String,
+//       },
+//       description: [String],
+//       feeType: String,
+//       feeAmount: [String],
+//     },
+//   ],
+//   // selection criteria
+//   selectionCriteria: [
+//     {
+//       heading: {
+//         type: String,
+//       },
+//       description: [String],
+//       subHeading: [String],
+//       eligibility: {
+//         type: String,
+//       },
+//     },
+//   ],
+// },

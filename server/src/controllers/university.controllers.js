@@ -269,7 +269,7 @@ const searchUniversities = asyncHandler(async (req, res) => {
         success: false,
       })
     );
-    throw new ApiError(400, "search item is required");
+    // throw new ApiError(400, "search item is required");
   }
   console.log("searchItem", searchItem);
 

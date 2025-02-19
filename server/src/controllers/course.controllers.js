@@ -66,6 +66,8 @@ const addCourse = asyncHandler(async (req, res) => {
   }
 });
 
+
+
 const addSubCourse = asyncHandler(async (req, res) => {
   try {
     const {
@@ -355,6 +357,74 @@ const updateSubCourse = asyncHandler(async (req, res) => {
   }
 });
 
+
+// search course 
+
+const searchCourse = asyncHandler(async (req,res)=>{
+  const {searchItem}= req.body;
+  console.log("searchItem", searchItem);
+  if(searchItem===""|| !searchItem){
+    console.log("search item is required");
+
+    return res.status(400).json(
+      new ApiResponse(400,{
+        message:"search item is required",
+        statusCode:400,
+        success:false
+      })
+    )
+  }
+  console.log("searchItem", searchItem);
+
+  try {
+    const course = await Course.find({
+      $or:[
+        {courseName:{$regex:`^${searchItem}`,$options:"i"}},
+        {courseShortName:{$regex:`^${searchItem}`,$options:"i"}},
+      ],
+    }).limit(10);
+
+    if(course.length===0){
+      return res.status(404).json({
+        message:"No course found",
+      })
+    }
+
+    if(!course){
+      return res.status(200).json({
+        message:"course fetched successfully",
+        course:course,
+        statusCode:200,
+        success:true
+      })
+    }
+
+    return res.status(200).json(
+      new ApiResponse(200, {
+        message:"course fetched successfully",
+        course:course,
+        statusCode:200,
+        success:true
+      })
+    )
+   
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(
+      new ApiResponse(500, {
+        message:"something went wrong",
+        statusCode:500,
+        success:false
+      })
+    ) 
+    
+  }
+  
+
+  
+})
+
 export {
   addCourse,
   addSubCourse,
@@ -364,4 +434,5 @@ export {
   getCourseByCourseId,
   getSubCourseByCourseIdAndSubCourseId,
   updateSubCourse,
+  searchCourse,
 };

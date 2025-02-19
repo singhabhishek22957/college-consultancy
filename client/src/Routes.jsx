@@ -19,6 +19,8 @@ import UpdateSubCourse from "./Components/Universities/Course/UpdateSubCourse.js
 import UpdateCourse from "./Components/Universities/Course/UpdateCourse.jsx";
 import GetAdmission from "./Components/Universities/Admission/GetAdmission.jsx";
 import UpdateAdmission from "./Components/Universities/Admission/UpdateAdmission.jsx";
+import AddAdmissionCourse from "./Components/Universities/Admission/AddAdmissionCourse.jsx";
+
 
 
 export const router = createBrowserRouter(
@@ -60,7 +62,7 @@ export const router = createBrowserRouter(
          <Route path="/university/update-admission/:universityId/:year" element={<UpdateAdmission/>}/>
 
 
-        {/* <Route path="/delete-admission" element={<AddAdmission/>}/> */}
+        <Route path="/add-admission-course" element={<AddAdmissionCourse/>}/>
         
 
         </Route>

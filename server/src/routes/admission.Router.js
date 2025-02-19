@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAuthenticated } from "../middlewares/auth.middleware.js";
-import { addAdmission, deleteAdmission, getAdmission, updateAdmission } from "../controllers/admission.controllers.js";
+import { addAdmission, addAdmissionCourse, deleteAdmission, getAdmission, getAdmissionYear, updateAdmission } from "../controllers/admission.controllers.js";
 
 
 const router = Router();
@@ -37,6 +37,13 @@ router.route("/update-admission").post(isAuthenticated,updateAdmission);
 // delete admission by university id and year
 router.route("/delete-admission").post(isAuthenticated,deleteAdmission);
 
+
+// add admission course 
+router.route("/add-admission-course").post(isAuthenticated,addAdmissionCourse);
+
+
+// get admission year 
+router.route("/get-admission-year").post(isAuthenticated,getAdmissionYear);
 
 
 
