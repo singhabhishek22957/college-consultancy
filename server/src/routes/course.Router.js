@@ -5,6 +5,7 @@ import {
   deleteCourse,
   getCourseByCourseId,
   getCourseByUniversityId,
+  getCourseListByUniversityId,
   getSubCourseByCourseIdAndSubCourseId,
   searchCourse,
   updateCourse,
@@ -59,5 +60,9 @@ router.route("/update-subCourse").post(isAuthenticated, updateSubCourse);
 
 // search course 
 router.route("/search-course").post(isAuthenticated,searchCourse)
+
+
+// get courseName list by universityId
+router.route("/get-courseName-list-universityId").post(isAuthenticated, getCourseListByUniversityId);
 
 export default router;

@@ -94,3 +94,53 @@ export const getAdmissionYear = async (data)=>{
     return response;
     
 }
+
+
+export const fetchUpdateAdmissionCourse = async (data)=>{
+    const response = await admissionService.post(
+        "/fetch-update-admission-course",{
+          data
+        },{
+            withCredentials:true
+        }
+    )
+
+    return response;
+    
+}
+
+
+export const updateAdmissionCourse = async (data)=>{
+    const response = await admissionService.post(
+        "/update-admission-course",{
+        ...data,
+        },{
+            withCredentials:true
+        }
+    )
+
+    return response;
+}
+
+
+
+export const getAdmissionCourse = async (data)=>{
+    const response = await admissionService.post("/get-admission-course",{
+        ...data
+    },{
+        withCredentials:true
+    })
+
+    return response;
+}
+
+
+export const deleteAdmissionCourse = async (data)=>{
+    const response = await admissionService.post("/delete-admission-course",{
+        ...data
+    },{
+        withCredentials:true
+    })
+
+    return response;
+}

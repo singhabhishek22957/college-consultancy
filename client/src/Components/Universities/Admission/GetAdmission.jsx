@@ -92,6 +92,11 @@ const GetAdmission = () => {
 
   }
 
+  const handleShowAdmissionCourse = (universityId, year)=>{
+
+    navigate(`/university/show-admission-course/${universityId}/${year}`);
+  }
+
   return (
     <div className="w-full mx-auto p-6 bg-white shadow-md rounded-md">
       <h2 className="text-2xl font-bold mb-4">Fetch University Admission</h2>
@@ -186,6 +191,14 @@ const GetAdmission = () => {
                     onClick={() => handleUpdateData(admission.universityId, admission.year)}
                   >
                     Edit
+                  </button>
+
+                  {/* show admission course */}
+                  <button
+                    className="mt-4 bg-blue-500 font-bold text-white px-4 py-2 rounded"
+                    onClick={() => handleShowAdmissionCourse(admission.universityId, admission.year)}
+                  >
+                    Show Admission Course
                   </button>
 
                   </div>

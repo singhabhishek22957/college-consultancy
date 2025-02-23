@@ -10,6 +10,9 @@ const admissionCourseSchema = new Schema({
   heading: {
     type: String,
   },
+  eligibility: {
+    type: String,
+  },
   
 
   // Admission Process
@@ -58,9 +61,6 @@ const admissionCourseSchema = new Schema({
       subHeading: {
         type: [String],
         default: [],
-      },
-      eligibility: {
-        type: String,
       },
     },
   

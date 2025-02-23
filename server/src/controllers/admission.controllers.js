@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Admission } from "../models/admission.models.js";
 import { University } from "../models/university.models.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -82,14 +83,13 @@ const addAdmission = asyncHandler(async (req, res) => {
   );
 });
 
-
-// get university admission year 
+// get university admission year
 
 const getAdmissionYear = asyncHandler(async (req, res) => {
   const { data } = req.body;
 
   console.log("req.body:-", req.body);
-  
+
   console.log("universityId:-", data.universityId);
   const universityId = data.universityId;
 
@@ -102,7 +102,7 @@ const getAdmissionYear = asyncHandler(async (req, res) => {
         statusCode: 404,
         success: false,
       })
-    )
+    );
     // throw new ApiError(404, "Admission not found");
   }
 
@@ -117,9 +117,7 @@ const getAdmissionYear = asyncHandler(async (req, res) => {
   );
 
   console.log("uniqueYears:-", uniqueYears);
-  
 });
-
 
 const getAdmission = asyncHandler(async (req, res) => {
   const { universityId, year } = req.body;
@@ -135,7 +133,7 @@ const getAdmission = asyncHandler(async (req, res) => {
           statusCode: 404,
           success: false,
         })
-      )
+      );
       // throw new ApiError(404, "admission not found");
     }
     res.status(200).json(
@@ -252,46 +250,35 @@ const addAdmissionCourse = asyncHandler(async (req, res) => {
       "admissionCourse.courseId": courseId,
     });
 
-    if(!checkAdmission && flag==false){
-      res.status(400).json(
-        new ApiResponse(400,{
-          message:"admission course not found, Please add admission first. (add-admission)",
-          statusCode:400,
-          success:false
+    if (checkAdmission==0 && flag == false) {
+
+      console.log("admission course not found");
+      
+      return res.status(400).json(
+        new ApiResponse(400, {
+          message:
+            "admission course not found, Please add admission first. (add-admission)",
+          statusCode: 400,
+          success: false,
         })
-      )
-      throw new ApiError(400,"admission course not found")
-    }else if (checkAdmission.length > 0) {
+      );
+      // throw new ApiError(400, "admission course not found");
+    } 
+     if (checkAdmission.length > 0  && flag == false) {
+      console.log("admission course already exist", checkAdmission);
+      
       console.log("admission course already exist");
-      res.status(400).json(
+       return res.status(400).json(
         new ApiResponse(400, {
           message: "admission course already exist",
           statusCode: 400,
           success: false,
         })
       );
-      throw new ApiError(400, "admission course already exist");
-    }else{
-      if(flag==false){
-        return;
-      }
-      console.log("admission course not exist");
-      res.status(200).json(
-        new ApiResponse(200,{
-          message:"admission course not exist, you are able to add it.",
-          addDetails:{
-            courseId,
-            universityId,
-            year,
-          }
-          ,
-          statusCode:200,
-          success:true
-        })
-      )
-    }
+      // throw new ApiError(400, "admission course already exist");
+    } 
 
-    if(flag==false){
+    if (flag == false) {
       return;
     }
 
@@ -329,7 +316,6 @@ const addAdmissionCourse = asyncHandler(async (req, res) => {
     );
 
     console.log("admission course added successfully admission: ", admission);
-    
 
     if (!admission) {
       throw new ApiError(
@@ -358,6 +344,206 @@ const addAdmissionCourse = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchUpdateAdmissionCourse = asyncHandler(async (req, res) => {
+  const { data } = req.body;
+
+  console.log("req.body:-", req.body);
+
+  const admission = await Admission.findOne(
+    {
+      universityId: new mongoose.Types.ObjectId(data.universityId),
+      year: data.year,
+      admissionCourse: {
+        $elemMatch: {
+          courseId: new mongoose.Types.ObjectId(data.courseId),
+        },
+      },
+    },
+    {
+      "admissionCourse.$": 1,
+    }
+  );
+
+  if (!admission) {
+    res.status(404).json(
+      new ApiResponse(404, {
+        message: "admission course not found",
+        statusCode: 404,
+        success: false,
+      })
+    );
+    throw new ApiError(404, "admission course not found");
+  }
+  console.log("admission course fetched successfully admission: ", admission);
+
+  res.status(200).json(
+    new ApiResponse(200, {
+      message: "admission course fetched successfully",
+      admission: admission,
+      statusCode: 200,
+      success: true,
+    })
+  );
+});
+
+
+
+const updateAdmissionCourse = asyncHandler(async (req, res) => {
+  const {
+    universityId,
+    year,
+    courseId,
+    heading,
+    admissionProcess,
+    admissionFee,
+    selectionCriteria,
+    eligibility,
+  } = req.body;
+
+  console.log("req.body:-", req.body);
+
+  try {
+    const admission = await Admission.findOneAndUpdate(
+      {
+        universityId: new mongoose.Types.ObjectId(universityId),
+        year: year,
+        "admissionCourse.courseId": new mongoose.Types.ObjectId(courseId),
+      },
+      {
+        $set: {
+          "admissionCourse.$.heading": heading,
+          "admissionCourse.$.admissionProcess": admissionProcess,
+          "admissionCourse.$.admissionFee": admissionFee,
+          "admissionCourse.$.selectionCriteria": selectionCriteria,
+          "admissionCourse.$.eligibility": eligibility,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!admission) {
+      res.status(404).json(
+        new ApiResponse(404, {
+          message: "admission course not found",
+          statusCode: 404,
+          success: false,
+        })
+      );
+      throw new ApiError(404, "admission course not found");
+    }
+
+    res.status(200).json(
+      new ApiResponse(200, {
+        message: "admission course updated successfully",
+        admission: admission,
+        statusCode: 200,
+        success: true,
+      })
+    );
+    console.log("admission course updated successfully admission: ", admission);
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(
+      500,
+      "something went wrong while updating admission course"
+    );
+  }
+});
+
+const deleteAdmissionCourse = asyncHandler(async (req,res)=>{
+  const {universityId, year, courseId} = req.body;
+
+  try {
+    const admission  = await Admission.findOneAndUpdate({
+      $and: [{ universityId: universityId }, { year: year }],
+    }, {
+      $pull: {
+        admissionCourse: {
+          courseId: new mongoose.Types.ObjectId(courseId)
+        }
+      }
+    }, {
+      new: true
+      
+    })
+
+    if (!admission) {
+      res.status(404).json(
+        new ApiResponse(404, {
+          message: "admission course not found",
+          statusCode: 404,
+          success: false,
+        })
+      );
+      throw new ApiError(404, "admission course not found");
+    }
+
+    res.status(200).json(
+      new ApiResponse(200, {
+        message: "admission course deleted successfully",
+        admission: admission,
+        statusCode: 200,
+        success: true,
+      })
+    )
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(
+      500,
+      "something went wrong while deleting admission course"
+    );
+    
+  }
+})
+
+const getAdmissionCourse = asyncHandler(async (req, res) => {
+  const { universityId, year } = req.body;
+
+  console.log("req.body:-", req.body);
+  try {
+    const university = await University.findById({ _id: universityId });
+    const admission = await Admission.findOne({
+      $and: [{ universityId: universityId }, { year: year }],
+    });
+
+    if (!admission) {
+      res.status(404).json(
+        new ApiResponse(404, {
+          message: "admission not found, Please add admission first",
+          statusCode: 404,
+          success: false,
+        })
+      );
+      throw new ApiError(404, "admission not found");
+    }
+
+    res.status(200).json(
+      new ApiResponse(200, {
+        message: "admission fetched successfully",
+        admission: admission.admissionCourse,
+        university: {
+          name: university.name,
+        },
+        statusCode: 200,
+        success: true,
+      })
+    );
+
+    console.log("admission fetched successfully admission: ", admission.admissionCourse);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(
+      new ApiResponse(500, {
+        message: "Something went wrong while fetching admission course",
+        statusCode: 500,
+        success: false,
+      })
+    );
+  }
+});
+
 export {
   addAdmission,
   getAdmission,
@@ -365,4 +551,8 @@ export {
   deleteAdmission,
   addAdmissionCourse,
   getAdmissionYear,
+  fetchUpdateAdmissionCourse,
+  updateAdmissionCourse,
+  getAdmissionCourse,
+  deleteAdmissionCourse,
 };

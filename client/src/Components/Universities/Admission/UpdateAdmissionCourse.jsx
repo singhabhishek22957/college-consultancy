@@ -3,38 +3,34 @@ import UniversitySearch from "../UniversitySearch";
 import SearchCourse from "../Course/SearchCourse";
 import {
   addAdmissionCourse,
+  fetchUpdateAdmissionCourse,
   getAdmissionYear,
+  updateAdmissionCourse,
 } from "../../../Service/AdmissionService";
 import { getCourseByUniversityId } from "../../../Service/CourseService";
 import LoadingPopUp from "../../User/LoadingPopUp";
 import MessagePopUp from "../../MessagePopUp";
-import { set } from "mongoose";
-const AddAdmissionCourse = () => {
-  const [isFormShow, setIsFormShow] = useState(false);
+import { useParams } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
+
+const UpdateAdmissionCourse = () => {
+  const { universityId, year, courseId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState({ success: false, message: "", badError: false });
-
-  // university fetch
-  const [universityData, setUniversityData] = useState({
-    universityId: "",
-    universityName: "",
+  const [success, setSuccess] = useState({
+    success: false,
+    message: "",
+    badError: false,
   });
 
-  const [courseData, setCourseData] = useState([
-    {
-      courseId: "",
-      courseName: "",
-    },
-  ]);
-
-  const [YearOption, setYearOptions] = useState([]);
+  const navigate = useNavigate();
 
   const [courseAdmissionData, setCourseAdmissionData] = useState({
-    flag:true,
-    courseId: "",
-    year: "",
-    universityId: "",
+    flag: true,
+    courseId: courseId,
+    year: year,
+    universityId: universityId,
     heading: "",
     eligibility: "",
     admissionProcess: {
@@ -53,66 +49,6 @@ const AddAdmissionCourse = () => {
       subHeading: [""],
     },
   });
-
-  useEffect(() => {
-    if (!universityData.universityId) return;
-    const getYear = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getAdmissionYear(universityData);
-        console.log("response", response);
-        if (response.data.data.statusCode === 404) {
-          setSuccess({ 
-            success: true,
-             message: response.data.data.message ,
-              badError: false });
-          return;
-        }
-
-        setYearOptions(["Select year....", ...response.data.data.years]);
-
-        const courseResponse = await getCourseByUniversityId(universityData);
-
-        const courseArr = courseResponse.data.data.course.map((course) => {
-          return {
-            courseId: course._id,
-            courseName: `${course.courseName} (${course.courseShortName})`,
-          };
-        });
-
-        // setCourseData(courseArr);
-        setCourseData([
-          { courseId: "", courseName: "Select Course..." },
-          ...courseArr,
-        ]);
-        setIsFormShow(true);
-        setCourseAdmissionData({
-          ...courseAdmissionData,
-          universityId: universityData.universityId,
-        });
-        setIsLoading(false);
-      } catch (error) {
-        console.log("error to in year fetch : ", error);
-        setSuccess({
-          success: true,
-          message: error.response.data.data.message,
-          badError: true,
-        })
-        console.log("error to in  fetch : ", error);
-        
-      }finally{
-        setIsLoading(false);
-      }
-    };
-    getYear();
-  }, [JSON.stringify(universityData)]);
-
-  const handleSearchDataFetch = (university) => {
-    setUniversityData({
-      universityId: university._id,
-      universityName: university.name,
-    });
-  };
 
   // end of university fetch
 
@@ -227,65 +163,88 @@ const AddAdmissionCourse = () => {
     });
   };
 
+  useEffect(() => {
+    const handleFetchUpdateData = async () => {
+      courseAdmissionData.flag = false;
 
-  const handleCheckAdmission = async(e)=>{
-    e.preventDefault();
-    courseAdmissionData.flag=false;
+      try {
+        setIsLoading(true);
 
+        const response = await fetchUpdateAdmissionCourse({
+          universityId: courseAdmissionData.universityId,
+          courseId: courseAdmissionData.courseId,
+          year: courseAdmissionData.year,
+        });
 
-    try {
-      setIsLoading(true);
-      const response = await addAdmissionCourse({
-        ...courseAdmissionData,
-        
-      })
-  
-      console.log("add admission course response", response);
-      setIsLoading(false);
-      setSuccess({
-        success: true,
-        message: response.data.data.message,
-        badError: false
-      })
-    } catch (error) {
-      console.log("error in add admission course", error);
-      setSuccess({
-        success: true,
-        message: error.response.data.data.message,
-        badError: true
-      })
-      
-      
-    }finally{
-      setIsLoading(false);
-    }
+        console.log("add update course response", response);
 
-  }
+        const admissionData =
+          response?.data?.data?.admission?.admissionCourse?.[0];
+        if (!admissionData) {
+          console.log("Admission data not found :", admissionData);
+
+          setSuccess({
+            success: true,
+            message: "No data found",
+            badError: true,
+          });
+          return;
+        }
+
+        setCourseAdmissionData((prev) => ({
+          ...prev,
+          admissionProcess: admissionData.admissionProcess,
+          selectionCriteria: admissionData.selectionCriteria,
+          admissionFee: admissionData.admissionFee,
+          eligibility: admissionData.eligibility,
+          heading: admissionData.heading,
+        }));
+
+        // setSuccess({
+        //   success: true,
+        //   message: response.data.data.message,
+        //   badError: false,
+        // });
+      } catch (error) {
+        console.log("error in add admission course", error);
+        setSuccess({
+          success: true,
+          message: error.response.data.data.message,
+          badError: true,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    handleFetchUpdateData();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     courseAdmissionData.flag = true;
-    console.log("Course Data list ", courseData);
+    console.log("Course Data list ", courseAdmissionData);
 
     try {
-      const response = await addAdmissionCourse({
+      const response = await updateAdmissionCourse({
         ...courseAdmissionData,
       });
 
       console.log("add admission course response", response);
+      console.log("course update data ", courseAdmissionData);
 
       setSuccess({
         success: true,
         message: response.data.data.message,
-        badError: false
-      })
+        badError: false,
+      });
     } catch (error) {
-
       console.log("error in add admission course", error);
       setSuccess({
         success: true,
         message: error.response.data.data.message,
-        badError: true
-      })
+        badError: true,
+      });
     }
 
     console.log("courseAdmissionData", courseAdmissionData);
@@ -297,65 +256,10 @@ const AddAdmissionCourse = () => {
         {" "}
         University Admission
       </h2>
-      <div className="flex gap-2">
-        <UniversitySearch onSelect={handleSearchDataFetch} />
-        <div>
-          <select
-            name="year"
-            onChange={handleChange}
-            value={courseAdmissionData.year}
-            className={`border min-w-[200px] ${
-              isFormShow ? "" : "hidden"
-            } border-gray-300 rounded-lg p-2 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200`}
-          >
-            {YearOption.map((option, idx) => (
-              <option
-                key={idx}
-                name="year"
-                value={option}
-                className="text-gray-700"
-              >
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <select
-            className={`border min-w-[200px] border-gray-300 rounded-lg p-2 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ${
-              isFormShow ? "" : "hidden"
-            }`}
-            onChange={handleChange} // Moved onChange here
-            name="courseId"
-            // defaultValue={"Please Select Course"}
-          >
-            {courseData.map((option, idx) => {
-              return (
-                <option
-                  key={idx}
-                  value={option.courseId}
-                  className="text-gray-700"
-                >
-                  {option.courseName}
-                </option>
-              );
-            })}
-          </select>
-
-          <button
-            className={`border min-w-[200px] ml-1 hover:bg-blue-600 hover:text-black border-gray-300 rounded-lg p-2 text-white bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ${isFormShow ? "" : "hidden"} `}
-            onClick={handleCheckAdmission}
-          >
-            Check Ability To Add Admission Course
-          </button>
-        </div>
-      </div>
+      <div className="flex gap-2"></div>
 
       <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
-        <form
-          onSubmit={handleSubmit}
-          className={`grid grid-cols-2 gap-4 ${isFormShow ? "" : "hidden"}`}
-        >
+        <form onSubmit={handleSubmit} className={`grid grid-cols-2 gap-4`}>
           {/* admission course heading  */}
           <div className="col-span-2">
             <label className="block font-medium">
@@ -641,11 +545,16 @@ const AddAdmissionCourse = () => {
           isOpen={success.success}
           message={success.message}
           badError={success.badError}
-          onClose={() => setSuccess({ success: false, message: "" })}
+          onClose={() => {
+            setSuccess({ success: false, message: "" });
+            navigate(
+              `/university/show-admission-course/${universityId}/${year}`
+            );
+          }}
         />
       </div>
     </div>
   );
 };
 
-export default AddAdmissionCourse;
+export default UpdateAdmissionCourse;

@@ -179,6 +179,46 @@ const getCourseByUniversityId = asyncHandler(async (req, res) => {
   }
 });
 
+const getCourseListByUniversityId = asyncHandler(async (req,res)=>{
+
+  const { universityId} = req.body;
+  
+  console.log("universityId", universityId);
+
+  try {
+
+    const courseList = await Course.find(
+      {universityId:universityId},
+      {courseName:1,courseShortName:1, _id:1},
+    )
+
+    if(!courseList){
+      throw new ApiError(404, "course not found");
+    }
+
+    res.status(200).json(
+      new ApiResponse(200, {
+        message: "course fetched successfully",
+        course: courseList,
+        statusCode: 200,
+        success: true,
+      })
+    );
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(
+      new ApiResponse(500, {
+        message: "Something went wrong while creating course",
+        statusCode: 500,
+        success: false,
+      })
+    );
+
+    
+  }
+})
+
 // get course by course id
 const getCourseByCourseId = asyncHandler(async (req, res) => {
   const { courseId } = req.body;
@@ -425,6 +465,11 @@ const searchCourse = asyncHandler(async (req,res)=>{
   
 })
 
+
+
+
+
+
 export {
   addCourse,
   addSubCourse,
@@ -435,4 +480,5 @@ export {
   getSubCourseByCourseIdAndSubCourseId,
   updateSubCourse,
   searchCourse,
+  getCourseListByUniversityId,
 };

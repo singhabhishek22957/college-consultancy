@@ -20,6 +20,8 @@ import UpdateCourse from "./Components/Universities/Course/UpdateCourse.jsx";
 import GetAdmission from "./Components/Universities/Admission/GetAdmission.jsx";
 import UpdateAdmission from "./Components/Universities/Admission/UpdateAdmission.jsx";
 import AddAdmissionCourse from "./Components/Universities/Admission/AddAdmissionCourse.jsx";
+import UpdateAdmissionCourse from "./Components/Universities/Admission/UpdateAdmissionCourse.jsx";
+import ShowAdmissionCourse from "./Components/Universities/Admission/ShowAdmissionCourse.jsx";
 
 
 
@@ -63,6 +65,8 @@ export const router = createBrowserRouter(
 
 
         <Route path="/add-admission-course" element={<AddAdmissionCourse/>}/>
+        <Route path="/update-admission-course/:universityId/:year/:courseId" element={<UpdateAdmissionCourse/>}/>
+        <Route path="/university/show-admission-course/:universityId/:year" element={<ShowAdmissionCourse/>}/>
         
 
         </Route>

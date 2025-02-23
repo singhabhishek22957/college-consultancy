@@ -111,4 +111,16 @@ export const searchCourse = async(data)=>{
 }
 
 
+export const getCourseListByUniversityId = async(data)=>{
+    const response = await courseService.post("/get-courseName-list-universityId",{
+        ...data
+    },{
+        withCredentials:true
+    }
+    );
+
+    return response;
+}
+
+
 

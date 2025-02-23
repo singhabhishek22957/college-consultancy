@@ -43,6 +43,9 @@ router.route("/get-archived-universities").get(isAuthenticated,getAllArchiveUniv
 // update university 
 router.route("/update-university").post(isAuthenticated,upload.fields([{name:"logoImage",maxCount:1},{name:"coverImage", maxCount:1}]),updateUniversity)
 
+
+
+
 router.route("*", (req, res) => {
     res.status(404).json({
         message: "route not found",
